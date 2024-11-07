@@ -1,4 +1,4 @@
-FROM android-build-tools:35.0.0
+FROM mahmoudazaid/android-build-tools:35.0.0
 
 ENV DEBIAN_FRONTEND noninteractive
 
