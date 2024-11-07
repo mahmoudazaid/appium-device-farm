@@ -53,13 +53,13 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ env.DOCKER_USERNAME }}/android:${{ env.VERSION }} .
-        docker build -t ${{ env.DOCKER_USERNAME }}/android:latest .
+        docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }} .
+        docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
 
     - name: Push Docker image
       run: |
-        docker push ${{ env.DOCKER_USERNAME }}/android:${{ env.VERSION }}
-        docker push ${{ env.DOCKER_USERNAME }}/android:latest
+        docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
+        docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
 
     - name: Clean up Docker images
       run: |
