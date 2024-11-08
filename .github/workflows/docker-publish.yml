@@ -3,22 +3,22 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main  
+      - main
   workflow_dispatch:
     inputs:
       version:
         description: 'Version tag for the Docker image'
-        required: true
-        default: 'latest'
+        required: false
   repository_dispatch:
     types: [docker-image-updated]
 
 jobs:
-  build:
+  PUBLISH_DOCKER_IMAGE:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       DOCKER_USERNAME: "mahmoudazaid"
-      DOCKER_SCOUT: https://github.com/docker/scout-cli/releases/download/v1.15.0/docker-scout_1.15.0_linux_amd64.tar.gz
+      DOCKER_SCOUT: "https://github.com/docker/scout-cli/releases/download/v1.15.0/docker-scout_1.15.0_linux_amd64.tar.gz"
 
     steps:
     - name: Checkout repository
@@ -41,67 +41,42 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # Set version from repository_dispatch payload if triggered by android-build-tools
-    - name: Set Version from Dispatch Event
-      if: github.event_name == 'repository_dispatch'
-      run: |
-        VERSION="${{ github.event.client_payload.version }}"
-        BUILD_TOOLS_VERSION="${{ github.event.client_payload.build_tools_version }}"
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "BUILD_TOOLS_VERSION=$BUILD_TOOLS_VERSION" >> $GITHUB_ENV
-
-    # Extract version from Dockerfile if it's not set by dispatch
-    - name: Extract version from Dockerfile (if not set by dispatch)
+    - name: Extract version from Dockerfile (ARG, LABEL, ENV)
       id: extract_version
       if: env.VERSION == ''
       run: |
-        VERSION=$(grep -m 1 'LABEL APPIUM_VERSION' Dockerfile | cut -d '=' -f2 | tr -d '"')
-        if [ -z "$VERSION" ]; then
-          VERSION=$(grep -m 1 'ENV APPIUM_VERSION' Dockerfile | cut -d '=' -f2 | tr -d '"')
-        fi
-        if [ -z "$VERSION" ]; then
-          VERSION=$(grep -m 1 'ARG APPIUM_VERSION' Dockerfile | cut -d '=' -f2 | tr -d '"')
-        fi
+        VERSION=$(grep -m 1 -E '^(ARG|LABEL|ENV)\s+APPIUM_VERSION=' Dockerfile | cut -d '=' -f2 | tr -d '"')
         echo "VERSION=$VERSION"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-    # Build Docker images with combined version and build tools version, if available
+    - name: Fail if no version is set
+      if: env.VERSION == ''
+      run: |
+        echo "Error: No version found in Dockerfile or provided through dispatch."
+        exit 1
+
     - name: Build Docker images
       run: |
         # Standard build tags
         docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }} .
         docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
 
-        # Additional build tag if triggered by android-build-tools
-        if [ -n "$BUILD_TOOLS_VERSION" ]; then
-          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }} .
-        fi
-    
     - name: Install Docker Scout ${{ env.DOCKER_SCOUT }}
       run: |
-          curl -fsSL ${{ env.DOCKER_SCOUT }} | tar xz -C /usr/local/bin
-          sudo ln -s /usr/local/bin/docker-scout /usr/bin/scout
-          docker-scout version
+        curl -fsSL ${{ env.DOCKER_SCOUT }} | tar xz -C /usr/local/bin
+        sudo ln -s /usr/local/bin/docker-scout /usr/bin/scout
+        docker-scout version
   
-    # Run Docker Scout to scan the images for vulnerabilities
     - name: Run Docker Scout to scan the images for vulnerabilities
       run: |
         docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
         docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
-        if [ -n "$BUILD_TOOLS_VERSION" ]; then
-          docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }}
-        fi
 
-    # Push Docker images to Docker Hub
     - name: Push Docker images
       run: |
         docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
         docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
-        if [ -n "$BUILD_TOOLS_VERSION" ]; then
-          docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }}
-        fi
 
-    # Clean up Docker images
     - name: Clean up Docker images
       run: |
         docker image prune -af
