@@ -78,13 +78,13 @@ jobs:
           docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
         fi
 
-    # Run Docker Scout to scan the image for vulnerabilities
+    # Run Docker Scout to scan the image for vulnerabilities (using the latest correct command)
     - name: Run Docker Scout to scan the image for vulnerabilities
       run: |
-        docker scout start ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
-        docker scout start ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
+        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
+        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
         if [ -n "$BUILD_TOOLS_VERSION" ]; then
-          docker scout start ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }}
+          docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }}
         fi
 
     # Push Docker images to Docker Hub
