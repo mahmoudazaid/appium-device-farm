@@ -68,36 +68,29 @@ jobs:
     - name: Build Docker image
       run: |
         if [ -z "$BUILD_TOOLS_VERSION" ]; then
-          # Case 1: Independently triggered - Build images with version only
           docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }} .
-          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
         else
-          # Case 2: Triggered by android-build-tools - Build images with version and build-tools version
           docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }} .
-          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }} .
-          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
         fi
+        docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
 
     # Run Docker Scout to scan the image for vulnerabilities (using the latest correct command)
     - name: Run Docker Scout to scan the image for vulnerabilities
       run: |
-        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
-        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
         if [ -n "$BUILD_TOOLS_VERSION" ]; then
           docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }}
         fi
+        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
+        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
 
     # Push Docker images to Docker Hub
     - name: Push Docker images
       run: |
-        if [ -z "$BUILD_TOOLS_VERSION" ]; then
+        if [ -n "$BUILD_TOOLS_VERSION" ]; then
           # Case 1: Independently triggered - Push images with version only
-          docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
-        else
-          # Case 2: Triggered by android-build-tools - Push images with version and build-tools version
           docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }}
-          docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
         fi
+        docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
         docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
 
     # Clean up Docker images
