@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_USERNAME: "mahmoudazaid"
+      DOCKER_SCOUT: https://github.com/docker/scout-cli/releases/download/v1.15.0/docker-scout_1.15.0_linux_amd64.tar.gz
 
     steps:
     - name: Checkout repository
@@ -75,7 +76,13 @@ jobs:
         if [ -n "$BUILD_TOOLS_VERSION" ]; then
           docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }} .
         fi
-
+    
+    - name: Install Docker Scout ${{ env.DOCKER_SCOUT }}
+      run: |
+          curl -fsSL ${{ env.DOCKER_SCOUT }} | tar xz -C /usr/local/bin
+          sudo ln -s /usr/local/bin/docker-scout /usr/bin/scout
+          docker-scout version
+  
     # Run Docker Scout to scan the images for vulnerabilities
     - name: Run Docker Scout to scan the images for vulnerabilities
       run: |
