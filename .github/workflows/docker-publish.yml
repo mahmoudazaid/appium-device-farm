@@ -52,7 +52,7 @@ jobs:
     - name: Fail if no version is set
       if: env.VERSION == ''
       run: |
-        echo "Error: No version found in Dockerfile or provided through dispatch."
+        echo "Error: APPIUM_VERSION missed in the Dockerfile."
         exit 1
 
     - name: Build Docker images
