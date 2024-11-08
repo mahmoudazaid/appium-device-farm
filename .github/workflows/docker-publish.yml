@@ -10,6 +10,8 @@ on:
         description: 'Version tag for the Docker image'
         required: true
         default: 'latest'
+  repository_dispatch:
+    types: [docker-image-updated]
 
 jobs:
   build:
@@ -38,8 +40,15 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Extract version from Dockerfile
+    - name: Set Version from Dispatch Event
+      if: github.event_name == 'repository_dispatch'
+      run: |
+        VERSION="${{ github.event.client_payload.version }}"
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Extract version from Dockerfile (if not set by dispatch)
       id: extract_version
+      if: env.VERSION == ''
       run: |
         VERSION=$(grep -m 1 'LABEL APPIUM_VERSION' Dockerfile | cut -d '=' -f2 | tr -d '"')
         if [ -z "$VERSION" ]; then
