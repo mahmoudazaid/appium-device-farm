@@ -44,7 +44,9 @@ jobs:
       if: github.event_name == 'repository_dispatch'
       run: |
         VERSION="${{ github.event.client_payload.version }}"
+        BUILD_TOOLS_VERSION="${{ github.event.client_payload.build_tools_version }}"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "BUILD_TOOLS_VERSION=$BUILD_TOOLS_VERSION" >> $GITHUB_ENV
 
     - name: Extract version from Dockerfile (if not set by dispatch)
       id: extract_version
@@ -62,12 +64,27 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }} .
-        docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
+        if [ -z "$BUILD_TOOLS_VERSION" ]; then
+          # Case 1: Independently triggered - Build images with version only
+          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }} .
+          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
+        else
+          # Case 2: Triggered by android-build-tools - Build images with version and build-tools version
+          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }} .
+          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }} .
+          docker build -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
+        fi
 
-    - name: Push Docker image
+    - name: Push Docker images
       run: |
-        docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
+        if [ -z "$BUILD_TOOLS_VERSION" ]; then
+          # Case 1: Independently triggered - Push images with version only
+          docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
+        else
+          # Case 2: Triggered by android-build-tools - Push images with version and build-tools version
+          docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}-${{ env.BUILD_TOOLS_VERSION }}
+          docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
+        fi
         docker push ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
 
     - name: Clean up Docker images
