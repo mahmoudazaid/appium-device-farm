@@ -53,7 +53,7 @@ ARG DEVICE_FARM_VERSION="9.2.3"
 #==============================
 # APPIUM Port ARGs
 #==============================
-ENV APPIUM_PORT="4723"
+ENV APPIUM_PORT="31337"
 
 #==============================
 # Expose Ports

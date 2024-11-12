@@ -12,7 +12,7 @@ function start_appium() {
     printf "${G}==> ${BL}Instance will run on port ${YE}${APPIUM_PORT} ${G}<==${NC}\n"
     
     # Start Appium with Device Farm plugin and specified port
-    if ! appium server --use-plugins=device-farm --plugin-device-farm-platform=android -p "${APPIUM_PORT}"; then
+    if ! appium server --ka 800 --use-plugins=device-farm --plugin-device-farm-platform=android -p "${APPIUM_PORT}" -pa /wd/hub; then
         printf "${RED}Error: Failed to start Appium server.${NC}\n"
         exit 1
     fi
