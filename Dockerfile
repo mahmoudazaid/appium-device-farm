@@ -8,15 +8,33 @@ ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /
 
 #=============================
-# Install Dependenices 
+# Install Dependencies 
 #=============================
-SHELL ["/bin/bash", "-c"]   
+SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install --no-install-recommends -y \
-    tzdata curl sudo wget unzip bzip2 libdrm-dev libxkbcommon-dev \
-    libgbm-dev libasound-dev libnss3 libxcursor1 libpulse-dev \
-    libxshmfence-dev xauth xvfb x11vnc fluxbox wmctrl libdbus-glib-1-2 \
-    iputils-ping net-tools && \
+    tzdata \
+    curl \
+    sudo \
+    wget \
+    unzip \
+    bzip2 \
+    libdrm-dev \
+    libxkbcommon-dev \
+    libgbm-dev \
+    libasound-dev \
+    libnss3 \
+    libxcursor1 \
+    libpulse-dev \
+    libxshmfence-dev \
+    xauth \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    wmctrl \
+    libdbus-glib-1-2 \
+    iputils-ping \
+    net-tools && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #==============================
@@ -31,6 +49,7 @@ ARG NPM_VERSION="latest"
 ARG APPIUM_VERSION="2.12.1"
 ARG UIAUTOMATOR_VERSION="3.8.0"
 ARG DEVICE_FARM_VERSION="9.2.3"
+
 #==============================
 # APPIUM Port ARGs
 #==============================
@@ -39,20 +58,20 @@ ARG APPIUM_PORT="4723"
 #==============================
 # Expose Ports
 #==============================
-# Appium Port: 4723
-#==============================
 EXPOSE ${APPIUM_PORT}
 
-
 #=========================
-# Copying Scripts to root
+# Copying necessary scripts to root
 #=========================
 COPY . /
 
+#=========================
+# Setting Executable Permissions
+#=========================
 RUN chmod a+x install-node.sh && \
     chmod a+x install-appium.sh && \
     chmod a+x start.sh
-    
+
 #====================================
 # Run Scripts
 #====================================
@@ -64,4 +83,11 @@ RUN ./install-appium.sh \
     --UIAUTOMATOR_VERSION=${UIAUTOMATOR_VERSION} \
     --DEVICE_FARM_VERSION=${DEVICE_FARM_VERSION}
 
+#============================================
+# Clean up the installation files and caches
+#============================================
+RUN rm -f install-node.sh install-appium.sh && \
+    rm -rf /tmp/* /var/tmp/*
+
+# Command to run the container
 CMD ["./start.sh", "--APPIUM_PORT=${APPIUM_PORT}"]
