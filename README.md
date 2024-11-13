@@ -2,7 +2,7 @@
 
 This project sets up an Appium server with the **Device Farm plugin** and **UiAutomator2 driver** installed. It provides an easy way to run automated mobile tests using Appium with Android devices.
 
-## Badges
+## Badges 
 
 Here are the status badges for various tools and dependencies:
 
