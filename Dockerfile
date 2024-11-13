@@ -40,7 +40,7 @@ RUN apt update && apt install --no-install-recommends -y \
 # Node Version ARGs #
 #===================#
 ARG NODE_VERSION="22"
-ARG NPM_VERSION="latest"
+ARG NPM_VERSION="10.9.0"
 
 #=====================#
 # APPIUM Version ARGs #

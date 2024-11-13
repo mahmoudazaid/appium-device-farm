@@ -6,9 +6,9 @@ This project sets up an Appium server with the **Device Farm plugin** and **UiAu
 
 Here are the status badges for various tools and dependencies:
 
-[![Docker Publish](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml)
+[![Docker Publish](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml)  
 ![Node Version](https://img.shields.io/badge/node-22.x-blue)
-![npm Version](https://img.shields.io/badge/npm-9.x-blue)
+![npm Version](https://img.shields.io/badge/npm-10.9.0-blue)  
 ![Appium Version](https://img.shields.io/badge/appium-2.12.1-blue)
 ![UiAutomator Version](https://img.shields.io/badge/uiautomator2-3.8.0-blue)
 ![Device-Farm Version](https://img.shields.io/badge/device_farm-9.2.3-blue)
@@ -47,7 +47,6 @@ docker build --build-arg NODE_VERSION="16" \
              --build-arg UIAUTOMATOR_VERSION="3.8.0" \
              --build-arg DEVICE_FARM_VERSION="9.2.3" \
              -t appium-device-farm .
-
 ```
 
 Replace the values in quotes with the versions you want to use.
@@ -78,7 +77,7 @@ docker run -d -p 4724:4724 -e APPIUM_PORT="4724" -e KEEP_ALIVE="60000" appium-de
 | --------------------- | ----------------------------------------------------------- | ------------- | ------------------------------------------ |
 | `BUILD_TOOLS_VERSION` | The version of Android Build Tools to use for the build.    | 35.0.0        | `--build-arg BUILD_TOOLS_VERSION="35.0.0"` |
 | `NODE_VERSION`        | The version of Node.js to install.                          | 16            | `--build-arg NODE_VERSION="18"`            |
-| `NPM_VERSION`         | The version of npm to install.                              | latest        | `--build-arg NPM_VERSION="9"`              |
+| `NPM_VERSION`         | The version of npm to install.                              | 10.9.0        | `--build-arg NPM_VERSION="9"`              |
 | `APPIUM_VERSION`      | The version of Appium to install.                           | 2.12.1        | `--build-arg APPIUM_VERSION="2.13.0"`      |
 | `UIAUTOMATOR_VERSION` | The version of the UiAutomator2 driver to install.          | 3.8.0         | `--build-arg UIAUTOMATOR_VERSION="3.9.0"`  |
 | `DEVICE_FARM_VERSION` | The version of the Device Farm plugin to install in Appium. | 9.2.3         | `--build-arg DEVICE_FARM_VERSION="9.3.0"`  |

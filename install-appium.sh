@@ -46,7 +46,7 @@ appium plugin install --source=npm "appium-device-farm@${DEVICE_FARM_VERSION}"
 #=============#
 echo "Cleaning up unnecessary files..."
 npm cache clean --force
-apt-get purge -y npm && \
+apt-get purge -y nodejs npm && \
 apt-get autoremove -y && \
 apt-get clean && \
 rm -rf /tmp/* /var/lib/apt/lists/*
