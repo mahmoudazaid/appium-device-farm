@@ -1,15 +1,15 @@
-ARG BUILD_TOOLS_VERSION=35.0.0
+ARG BUILD_TOOLS=35.0.0
 
-FROM mahmoudazaid/android-build-tools:${BUILD_TOOLS_VERSION}
+FROM mahmoudazaid/android-build-tools:${BUILD_TOOLS}
 
 ENV DEBIAN_FRONTEND noninteractive
 
 # Set working directory
 WORKDIR /
 
-#=============================
-# Install Dependencies 
-#=============================
+#======================#
+# Install Dependencies #
+#======================#
 SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install --no-install-recommends -y \
@@ -37,32 +37,32 @@ RUN apt update && apt install --no-install-recommends -y \
     net-tools && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-#==============================
-# Node Version ARGs
-#==============================
+#===================#
+# Node Version ARGs #
+#===================#
 ARG NODE_VERSION="22"
 ARG NPM_VERSION="latest"
 
-#==============================
-# APPIUM Version ARGs
-#==============================
+#=====================#
+# APPIUM Version ARGs #
+#=====================#
 ARG APPIUM_VERSION="2.12.1"
 ARG UIAUTOMATOR_VERSION="3.8.0"
 ARG DEVICE_FARM_VERSION="9.2.3"
 
-#=========================
-# Copying necessary scripts to root
-#=========================
+#===================================#
+# Copying necessary scripts to root #
+#===================================#
 COPY install-node.sh install-appium.sh start.sh /
 
-#=========================
-# Setting Executable Permissions
-#=========================
+#================================#
+# Setting Executable Permissions #
+#================================#
 RUN chmod a+x install-node.sh install-appium.sh start.sh
 
-#====================================
-# Run Scripts
-#====================================
+#=============#
+# Run Scripts #
+#=============#
 RUN ./install-node.sh \
     --NODE_VERSION=${NODE_VERSION} \ 
     --NPM_VERSION=${NPM_VERSION}
@@ -72,11 +72,12 @@ RUN ./install-appium.sh \
     --UIAUTOMATOR_VERSION=${UIAUTOMATOR_VERSION} \
     --DEVICE_FARM_VERSION=${DEVICE_FARM_VERSION}
 
-#============================================
-# Clean up the installation files and caches
-#============================================
+#============================================#
+# Clean up the installation files and caches #
+#============================================#
 RUN rm -f install-node.sh install-appium.sh && \
     rm -rf /tmp/* /var/tmp/*
-
-# Command to run the container
-CMD ["./start.sh"]
+#==============================#
+# Command to run the container #
+#==============================#
+# CMD ["./start.sh"]
