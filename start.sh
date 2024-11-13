@@ -10,8 +10,9 @@ NC='\033[0m' # No Color
 #======================#
 # Appium Configuration #
 #======================#
-APPIUM_PORT="${APPIUM_PORT:-4723}"  
+APPIUM_PORT="${APPIUM_PORT:-4723}"
 KEEP_ALIVE="${KEEP_ALIVE:-600}"
+
 #==============#
 # Start Appium #
 #==============#

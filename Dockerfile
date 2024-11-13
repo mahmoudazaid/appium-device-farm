@@ -1,8 +1,7 @@
 ARG BUILD_TOOLS=35.0.0
-
 FROM mahmoudazaid/android-build-tools:${BUILD_TOOLS}
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Set working directory
 WORKDIR /
@@ -64,10 +63,9 @@ RUN chmod a+x install-node.sh install-appium.sh start.sh
 # Run Scripts #
 #=============#
 RUN ./install-node.sh \
-    --NODE_VERSION=${NODE_VERSION} \ 
-    --NPM_VERSION=${NPM_VERSION}
+    --NODE_VERSION=${NODE_VERSION} --NPM_VERSION=${NPM_VERSION}
 
-RUN ./install-appium.sh \
+RUN ./install-appium.sh \ 
     --APPIUM_VERSION=${APPIUM_VERSION} \
     --UIAUTOMATOR_VERSION=${UIAUTOMATOR_VERSION} \
     --DEVICE_FARM_VERSION=${DEVICE_FARM_VERSION}
@@ -76,8 +74,9 @@ RUN ./install-appium.sh \
 # Clean up the installation files and caches #
 #============================================#
 RUN rm -f install-node.sh install-appium.sh && \
-    rm -rf /tmp/* /var/tmp/*
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
 #==============================#
 # Command to run the container #
 #==============================#
-# CMD ["./start.sh"]
+CMD ["./start.sh"]
