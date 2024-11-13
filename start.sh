@@ -7,16 +7,27 @@ RED='\033[0;31m'
 YE='\033[1;33m'
 NC='\033[0m' # No Color
 
-function start_appium() {
-    # Default to port 4723 if APPIUM_PORT is not set
-    printf "${G}==> ${BL}Instance will run on port ${YE}${APPIUM_PORT} ${G}<==${NC}\n"
-    
-    # Start Appium with Device Farm plugin and specified port
-    if ! appium server --ka 800 --use-plugins=device-farm --plugin-device-farm-platform=android -p "${APPIUM_PORT}" -pa /wd/hub; then
+#======================#
+# Appium Configuration #
+#======================#
+APPIUM_PORT="${APPIUM_PORT:-4723}"  
+KEEP_ALIVE="${KEEP_ALIVE:-600}"
+#==============#
+# Start Appium #
+#==============#
+printf "${G}==> ${BL}Starting Appium on port ${YE}${APPIUM_PORT}${G} with keep-alive ${YE}${KEEP_ALIVE}${G} ms <==${NC}\n"
+
+# Check if KEEP_ALIVE is passed as an environment variable during docker run
+if [ -z "$KEEP_ALIVE" ]; then
+    # If KEEP_ALIVE is not passed, run without the --ka option
+    if ! appium server --use-plugins=device-farm --plugin-device-farm-platform=android -p "${APPIUM_PORT}" -pa /wd/hub; then
         printf "${RED}Error: Failed to start Appium server.${NC}\n"
         exit 1
     fi
-}
-
-# Run the function to start Appium
-start_appium
+else
+    # If KEEP_ALIVE is passed, include it in the command
+    if ! appium server --ka "${KEEP_ALIVE}" --use-plugins=device-farm --plugin-device-farm-platform=android -p "${APPIUM_PORT}" -pa /wd/hub; then
+        printf "${RED}Error: Failed to start Appium server.${NC}\n"
+        exit 1
+    fi
+fi
