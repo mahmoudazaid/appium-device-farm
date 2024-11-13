@@ -2,7 +2,7 @@
 
 This project sets up an Appium server with the **Device Farm plugin** and **UiAutomator2 driver** installed. It provides an easy way to run automated mobile tests using Appium with Android devices.
 
-## [![Build Status](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml) (#) [![Node Version](https://img.shields.io/badge/node-16.x-brightgreen)](#) [![npm Version](https://img.shields.io/badge/npm-9.x-brightgreen)](#) [![Appium Version](https://img.shields.io/badge/appium-2.12.1-brightgreen)](#) [![UiAutomator Version](https://img.shields.io/badge/uiautomator2-3.8.0-brightgreen)](#) [![Device-Farm Version](https://img.shields.io/badge/device_farm-9.2.3-brightgreen)](#)
+## [![Node Version](https://img.shields.io/badge/node-22.x-brightgreen)](#) [![npm Version](https://img.shields.io/badge/npm-9.x-brightgreen)](#) [![Appium Version](https://img.shields.io/badge/appium-2.12.1-brightgreen)](#) [![UiAutomator Version](https://img.shields.io/badge/uiautomator2-3.8.0-brightgreen)](#) [![Device-Farm Version](https://img.shields.io/badge/device_farm-9.2.3-brightgreen)](#)
 
 ## Table of Contents
 
