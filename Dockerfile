@@ -50,34 +50,23 @@ ARG APPIUM_VERSION="2.12.1"
 ARG UIAUTOMATOR_VERSION="3.8.0"
 ARG DEVICE_FARM_VERSION="9.2.3"
 
-#==============================
-# APPIUM Port ARGs
-#==============================
-ENV APPIUM_PORT="31337"
-
-#==============================
-# Expose Ports
-#==============================
-EXPOSE ${APPIUM_PORT}
-
 #=========================
 # Copying necessary scripts to root
 #=========================
-COPY . /
+COPY install-node.sh install-appium.sh start.sh /
 
 #=========================
 # Setting Executable Permissions
 #=========================
-RUN chmod a+x install-node.sh && \
-    chmod a+x install-appium.sh && \
-    chmod a+x start.sh
+RUN chmod a+x install-node.sh install-appium.sh start.sh
 
 #====================================
 # Run Scripts
 #====================================
 RUN ./install-node.sh \
-    --NODE_VERSION=${NODE_VERSION} \
+    --NODE_VERSION=${NODE_VERSION} \ 
     --NPM_VERSION=${NPM_VERSION}
+
 RUN ./install-appium.sh \
     --APPIUM_VERSION=${APPIUM_VERSION} \
     --UIAUTOMATOR_VERSION=${UIAUTOMATOR_VERSION} \
@@ -90,4 +79,4 @@ RUN rm -f install-node.sh install-appium.sh && \
     rm -rf /tmp/* /var/tmp/*
 
 # Command to run the container
-CMD ["./start.sh", "--APPIUM_PORT=${APPIUM_PORT}"]
+CMD ["./start.sh"]
