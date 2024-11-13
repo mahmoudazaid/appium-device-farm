@@ -7,11 +7,11 @@ This project sets up an Appium server with the **Device Farm plugin** and **UiAu
 Here are the status badges for various tools and dependencies:
 
 [![Docker Publish](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/mahmoudazaid/appium-device-farm/actions/workflows/docker-publish.yml)
-![Node Version](https://img.shields.io/badge/node-${{ env.NODE_VERSION }}-blue)
-![npm Version](https://img.shields.io/badge/npm-${{ env.NPM_VERSION }}-blue)
-![Appium Version](https://img.shields.io/badge/appium-${{ env.APPIUM_VERSION }}-blue)
-![UiAutomator Version](https://img.shields.io/badge/uiautomator2-${{ env.UIAUTOMATOR_VERSION }}-blue)
-![Device-Farm Version](https://img.shields.io/badge/device_farm-${{ env.DEVICE_FARM_VERSION }}-blue)
+![Node Version](https://img.shields.io/badge/node-22.x-blue)
+![npm Version](https://img.shields.io/badge/npm-9.x-blue)
+![Appium Version](https://img.shields.io/badge/appium-2.12.1-blue)
+![UiAutomator Version](https://img.shields.io/badge/uiautomator2-3.8.0-blue)
+![Device-Farm Version](https://img.shields.io/badge/device_farm-9.2.3-blue)
 
 ## Table of Contents
 
