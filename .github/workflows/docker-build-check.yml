@@ -36,6 +36,17 @@ jobs:
         docker ps -a
         docker logs test-appium-device-farm
 
+    - name: Install Docker Scout ${{ env.DOCKER_SCOUT }}
+      run: |
+        curl -fsSL ${{ env.DOCKER_SCOUT }} | tar xz -C /usr/local/bin
+        sudo ln -s /usr/local/bin/docker-scout /usr/bin/scout
+        docker-scout version
+  
+    - name: Run Docker Scout to scan the images for vulnerabilities
+      run: |
+        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ env.VERSION }}
+        docker-scout cves ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest
+
     - name: Clean up
       run: |
         docker stop test-appium-device-farm
