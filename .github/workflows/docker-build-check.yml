@@ -29,13 +29,17 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build Multi-Architecture Docker Image
+    - name: Build Multi-Architecture Docker Image and Export as Tar
       run: |
         docker buildx build \
           --platform linux/amd64,linux/arm64/v8 \
           -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }} \
           -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest \
-          --load .
+          --output type=docker,dest=/tmp/appium-device-farm.tar .
+
+    - name: Load Docker Image from Tar
+      run: |
+        docker load -i /tmp/appium-device-farm.tar
 
     - name: Test Docker Image on linux/amd64
       run: |
