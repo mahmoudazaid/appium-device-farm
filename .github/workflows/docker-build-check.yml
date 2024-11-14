@@ -34,7 +34,8 @@ jobs:
         docker buildx build \
           --platform linux/amd64,linux/arm64/v8 \
           -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }} \
-          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
+          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest \
+          --load .
 
     - name: Test Docker Image on linux/amd64
       run: |
