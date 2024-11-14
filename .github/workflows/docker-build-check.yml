@@ -29,13 +29,12 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and Push Multi-Architecture Docker Image
+    - name: Build Multi-Architecture Docker Image
       run: |
         docker buildx build \
           --platform linux/amd64,linux/arm64/v8 \
           -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }} \
-          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest \
-          --push .
+          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest .
 
     - name: Test Docker Image on linux/amd64
       run: |
