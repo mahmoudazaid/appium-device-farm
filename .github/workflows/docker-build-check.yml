@@ -1,4 +1,4 @@
-name: Docker Build and Run Check
+name: Docker Image Health Check
 
 on:
   pull_request:
@@ -39,6 +39,7 @@ jobs:
 
     - name: Test Docker Image on linux/amd64
       run: |
+        echo "Testing Docker image on linux/amd64"
         docker run --platform linux/amd64 -d --name test-appium-device-farm-amd64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
         sleep 10
         docker ps -a
@@ -48,6 +49,7 @@ jobs:
 
     - name: Test Docker Image on linux/arm64/v8
       run: |
+        echo "Testing Docker image on linux/arm64/v8"
         docker run --platform linux/arm64/v8 -d --name test-appium-device-farm-arm64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
         sleep 10
         docker ps -a
