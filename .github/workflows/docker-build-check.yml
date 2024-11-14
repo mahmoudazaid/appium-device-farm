@@ -29,22 +29,22 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build Multi-Architecture Docker Image and Export as Tar
+    - name: Build Multi-Architecture Docker Image and Export as OCI Tar
       run: |
         docker buildx build \
           --platform linux/amd64,linux/arm64/v8 \
           -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }} \
           -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest \
-          --output type=docker,dest=/tmp/appium-device-farm.tar .
+          --output type=oci,dest=/tmp/appium-device-farm.tar .
 
-    - name: Load Docker Image from Tar
+    - name: Load Docker Image from OCI Tar
       run: |
-        docker load -i /tmp/appium-device-farm.tar
+        cat /tmp/appium-device-farm.tar | docker import - mahmoudazaid/appium-device-farm:${{ github.sha }}
 
     - name: Test Docker Image on linux/amd64
       run: |
         echo "Testing Docker image on linux/amd64"
-        docker run --platform linux/amd64 -d --name test-appium-device-farm-amd64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
+        docker run --platform linux/amd64 -d --name test-appium-device-farm-amd64 mahmoudazaid/appium-device-farm:${{ github.sha }}
         sleep 10
         docker ps -a
         docker logs test-appium-device-farm-amd64
@@ -54,7 +54,7 @@ jobs:
     - name: Test Docker Image on linux/arm64/v8
       run: |
         echo "Testing Docker image on linux/arm64/v8"
-        docker run --platform linux/arm64/v8 -d --name test-appium-device-farm-arm64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
+        docker run --platform linux/arm64/v8 -d --name test-appium-device-farm-arm64 mahmoudazaid/appium-device-farm:${{ github.sha }}
         sleep 10
         docker ps -a
         docker logs test-appium-device-farm-arm64
