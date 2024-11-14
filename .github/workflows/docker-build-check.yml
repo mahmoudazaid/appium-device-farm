@@ -17,6 +17,11 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
+      with:
+        install: true
+
+    - name: Install QEMU for Multi-Architecture Support
+      uses: docker/setup-qemu-action@v3
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
@@ -24,19 +29,35 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build Docker image
+    - name: Build and Push Multi-Architecture Docker Image
       run: |
-        docker build -t appium-device-farm:${{ github.sha }} .  
+        docker buildx build \
+          --platform linux/amd64,linux/arm64/v8 \
+          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }} \
+          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest \
+          --push .
 
-    - name: Check if the Docker image runs
+    - name: Test Docker Image on linux/amd64
       run: |
-        # Run the image and check if it's running
-        docker run -d --name test-appium-device-farm appium-device-farm:${{ github.sha }}  # Run image in detached mode
-        sleep 10  
+        docker run --platform linux/amd64 -d --name test-appium-device-farm-amd64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
+        sleep 10
         docker ps -a
-        docker logs test-appium-device-farm
+        docker logs test-appium-device-farm-amd64
+      env:
+        PLATFORM: linux/amd64
+
+    - name: Test Docker Image on linux/arm64/v8
+      run: |
+        docker run --platform linux/arm64/v8 -d --name test-appium-device-farm-arm64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
+        sleep 10
+        docker ps -a
+        docker logs test-appium-device-farm-arm64
+      env:
+        PLATFORM: linux/arm64/v8
 
     - name: Clean up
       run: |
-        docker stop test-appium-device-farm
-        docker rm test-appium-device-farm
+        docker stop test-appium-device-farm-amd64 || true
+        docker stop test-appium-device-farm-arm64 || true
+        docker rm test-appium-device-farm-amd64 || true
+        docker rm test-appium-device-farm-arm64 || true
