@@ -1,4 +1,4 @@
-name: Check Docker Image Health
+name: Docker Build and Run Check
 
 on:
   pull_request:
@@ -29,16 +29,17 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build Multi-Architecture Docker Image
+    - name: Build and Push Multi-Architecture Docker Image
       run: |
         docker buildx build \
           --platform linux/amd64,linux/arm64/v8 \
-          -t appium-device-farm:${{ github.sha }} \
-          --load .
+          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }} \
+          -t ${{ env.DOCKER_USERNAME }}/appium-device-farm:latest \
+          --push .
 
     - name: Test Docker Image on linux/amd64
       run: |
-        docker run --platform linux/amd64 -d --name test-appium-device-farm-amd64 appium-device-farm:${{ github.sha }}
+        docker run --platform linux/amd64 -d --name test-appium-device-farm-amd64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
         sleep 10
         docker ps -a
         docker logs test-appium-device-farm-amd64
@@ -47,7 +48,7 @@ jobs:
 
     - name: Test Docker Image on linux/arm64/v8
       run: |
-        docker run --platform linux/arm64/v8 -d --name test-appium-device-farm-arm64 appium-device-farm:${{ github.sha }}
+        docker run --platform linux/arm64/v8 -d --name test-appium-device-farm-arm64 ${{ env.DOCKER_USERNAME }}/appium-device-farm:${{ github.sha }}
         sleep 10
         docker ps -a
         docker logs test-appium-device-farm-arm64
