@@ -13,7 +13,7 @@ NC='\033[0m'       # No Color
 # Default configuration values
 APPIUM_PORT="${APPIUM_PORT:-4723}"           # Default Appium port
 KEEP_ALIVE="${KEEP_ALIVE:-600}"              # Default keep-alive in ms
-HUB_IP="${HUB_IP:-}"                         # Optional hub IP
+HUB_ADDRESS="${HUB_ADDRESS:-}"                # Optional hub IP
 HUB_PORT="${HUB_PORT:-4723}"                 # Default Hub port
 BASE_PATH="${BASE_PATH:-}"                   # Default base path
 
@@ -31,20 +31,20 @@ appium_command="appium server \
     --plugin-device-farm-platform=android \
     --port ${APPIUM_PORT}"
 
+#=======================================================#
+# Add hub configuration only if HUB_ADDRESS is provided #
+#=======================================================#
+if [[ -n "${HUB_ADDRESS}" ]]; then
+    printf "${G}==> ${BL}Configuring hub address to ${YE}${HUB_ADDRESS}:${HUB_PORT}${NC}\n"
+    appium_command+=" --plugin-device-farm-hub=http://${HUB_ADDRESS}:${HUB_PORT}"
+fi
+
 #===========================#
 # Add base path if provided #
 #===========================#
 if [[ -n "${BASE_PATH}" ]]; then
     printf "${G}==> ${BL}Using base path: ${YE}${BASE_PATH}${NC}\n"
     appium_command+=" --base-path ${BASE_PATH}"
-fi
-
-#=======================================================#
-# Add hub configuration only if HUB_IP is provided #
-#=======================================================#
-if [[ -n "${HUB_IP}" ]]; then
-    printf "${G}==> ${BL}Configuring hub address to ${YE}${HUB_IP}:${HUB_PORT}${NC}\n"
-    appium_command+=" --plugin-device-farm-hub=http://${HUB_IP}:${HUB_PORT}"
 fi
 
 #============================#
