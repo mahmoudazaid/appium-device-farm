@@ -18,7 +18,14 @@ BASE_PATH="${BASE_PATH:-}" # Default to empty string
 # Start Appium #
 #==============#
 printf "${G}==> ${BL}Starting Appium on port ${YE}${APPIUM_PORT}${G} with keep-alive ${YE}${KEEP_ALIVE}${G} ms <==${NC}\n"
-if ! appium server -ka "${KEEP_ALIVE}" --use-plugins=device-farm --plugin-device-farm-platform=android -p "${APPIUM_PORT}" -pa $BASE_PATH; then
+
+# Build the base path argument if APPIUM_BASE has a value
+BASE_PATH_ARG=""
+if [[ -n "$BASE_PATH" ]]; then
+    BASE_PATH_ARG="-pa ${BASE_PATH}"
+fi
+
+if ! appium server -ka "${KEEP_ALIVE}" --use-plugins=device-farm --plugin-device-farm-platform=android -p "${APPIUM_PORT}" $BASE_PATH_ARG; then
     printf "${RED}Error: Failed to start Appium server.${NC}\n"
     exit 1
 fi
