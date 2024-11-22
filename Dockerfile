@@ -22,6 +22,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update && apt install --no-install-recommends -y \
     tzdata \
     curl \
+    git \
     sudo \
     wget \
     unzip \
