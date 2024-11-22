@@ -3,8 +3,16 @@ FROM mahmoudazaid/android-build-tools:${BUILD_TOOLS_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Set working directory
+#=======================#
+# Set working directory #
+#=======================#
 WORKDIR /
+
+
+#===============================#
+# Set Appium not run by default #
+#===============================#
+ENV APPIUM=false
 
 #======================#
 # Install Dependencies #
@@ -14,6 +22,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update && apt install --no-install-recommends -y \
     tzdata \
     curl \
+    git \
     sudo \
     wget \
     unzip \
@@ -39,15 +48,15 @@ RUN apt update && apt install --no-install-recommends -y \
 #===================#
 # Node Version ARGs #
 #===================#
-ARG NODE_VERSION="22"
-ARG NPM_VERSION="10.9.0"
+ARG NODE_VERSION=22
+ARG NPM_VERSION=10.9.1
 
 #=====================#
 # APPIUM Version ARGs #
 #=====================#
-ARG APPIUM_VERSION="2.12.1"
-ARG UIAUTOMATOR_VERSION="3.8.0"
-ARG DEVICE_FARM_VERSION="9.2.3"
+ARG APPIUM_VERSION=2.12.1
+ARG UIAUTOMATOR_VERSION=3.8.0
+ARG DEVICE_FARM_VERSION=9.4.6
 
 #===================================#
 # Copying necessary scripts to root #

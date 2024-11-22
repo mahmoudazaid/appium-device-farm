@@ -16,7 +16,7 @@ KEEP_ALIVE="${KEEP_ALIVE:-600}"             # Default keep-alive in ms
 HUB_ADDRESS="${HUB_ADDRESS:-}"              # Optional hub IP
 HUB_PORT="${HUB_PORT:-4723}"                # Default Hub port
 BASE_PATH="${BASE_PATH:-}"                  # Default base path
-PLATFORM="${PLATFORM:-both}"                # Default platform
+PLATFORM="${PLATFORM:-android}"                # Default platform
 
 #==============#
 # Start Appium #
