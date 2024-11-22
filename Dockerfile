@@ -33,7 +33,11 @@ RUN apt update && apt install --no-install-recommends -y \
     wmctrl \
     libdbus-glib-1-2 \
     iputils-ping \
-    net-tools && \
+    net-tools \
+    usbmuxd \
+    libimobiledevice-utils \
+    libusbmuxd-tools \
+    python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #===================#
@@ -69,6 +73,14 @@ RUN ./install-appium.sh \
     --APPIUM_VERSION=${APPIUM_VERSION} \
     --UIAUTOMATOR_VERSION=${UIAUTOMATOR_VERSION} \
     --DEVICE_FARM_VERSION=${DEVICE_FARM_VERSION}
+
+#===========================#
+# Start usbmuxd service     #
+#===========================#
+RUN mkdir -p /var/run/usbmuxd && \
+    chown root:root /var/run/usbmuxd && \
+    chmod 777 /var/run/usbmuxd && \
+    usbmuxd -v &
 
 #============================================#
 # Clean up the installation files and caches #
