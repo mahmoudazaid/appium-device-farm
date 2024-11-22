@@ -42,7 +42,7 @@ jobs:
         
         # Check if Appium server started successfully
         echo "Checking Appium server status"
-        if ! docker exec test-appium-device-farm-amd64 curl --fail http://localhost:4723/wd/hub/status; then
+        if ! docker exec test-appium-device-farm-amd64 curl --fail http://localhost:4723/status; then
           echo "Appium server did not start successfully."
           docker logs test-appium-device-farm-amd64
           docker stop test-appium-device-farm-amd64 || true
