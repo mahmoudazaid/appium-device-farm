@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 #======================#
 APPIUM_PORT="${APPIUM_PORT:-4723}"  
 KEEP_ALIVE="${KEEP_ALIVE:-600}" 
-BASE_PATH="${BASE_PATH:-/}" # Default base path
+BASE_PATH="${BASE_PATH:-}" # Default to empty string
 
 #==============#
 # Start Appium #
