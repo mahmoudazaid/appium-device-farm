@@ -3,8 +3,16 @@ FROM mahmoudazaid/android-build-tools:${BUILD_TOOLS_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Set working directory
+#=======================#
+# Set working directory #
+#=======================#
 WORKDIR /
+
+
+#===============================#
+# Set Appium not run by default #
+#===============================#
+ENV APPIUM=false
 
 #======================#
 # Install Dependencies #
@@ -33,25 +41,21 @@ RUN apt update && apt install --no-install-recommends -y \
     wmctrl \
     libdbus-glib-1-2 \
     iputils-ping \
-    net-tools \
-    usbmuxd \
-    libimobiledevice-utils \
-    libusbmuxd-tools \
-    python3-pip && \
+    net-tools && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #===================#
 # Node Version ARGs #
 #===================#
-ARG NODE_VERSION="22"
-ARG NPM_VERSION="10.9.0"
+ARG NODE_VERSION=22
+ARG NPM_VERSION=10.9.1
 
 #=====================#
 # APPIUM Version ARGs #
 #=====================#
-ARG APPIUM_VERSION="2.12.1"
-ARG UIAUTOMATOR_VERSION="3.8.0"
-ARG DEVICE_FARM_VERSION="9.2.3"
+ARG APPIUM_VERSION=2.12.1
+ARG UIAUTOMATOR_VERSION=3.8.0
+ARG DEVICE_FARM_VERSION=9.4.6
 
 #===================================#
 # Copying necessary scripts to root #
@@ -73,14 +77,6 @@ RUN ./install-appium.sh \
     --APPIUM_VERSION=${APPIUM_VERSION} \
     --UIAUTOMATOR_VERSION=${UIAUTOMATOR_VERSION} \
     --DEVICE_FARM_VERSION=${DEVICE_FARM_VERSION}
-
-#===========================#
-# Start usbmuxd service     #
-#===========================#
-RUN mkdir -p /var/run/usbmuxd && \
-    chown root:root /var/run/usbmuxd && \
-    chmod 777 /var/run/usbmuxd && \
-    usbmuxd -v &
 
 #============================================#
 # Clean up the installation files and caches #
